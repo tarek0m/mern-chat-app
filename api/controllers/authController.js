@@ -21,18 +21,13 @@ const getProfile = (req, res) => {
 
 const loginUser = async (req, res) => {
   const { username, password } = req.body;
-  console.log('loginUser');
   try {
     const foundUser = await User.findOne({ username });
     if (foundUser) {
       const isPassed = bcrypt.compareSync(password, foundUser.password);
-      console.log('passed: ', isPassed);
       if (isPassed) {
-        console.log('logged in');
-        console.log(foundUser);
-        console.log(jwtSecret);
         jwt.sign(
-          { userId: foundUser._id, activeUsername: username },
+          { userId: foundUser._id, username: username },
           jwtSecret,
           {},
           (err, token) => {
@@ -70,7 +65,7 @@ const registerUser = async (req, res) => {
       password, // Password hashing is handled by the pre-save hook in User model
     });
     jwt.sign(
-      { userId: createdUser._id, activeUsername: username },
+      { userId: createdUser._id, username: username },
       jwtSecret,
       {},
       (err, token) => {

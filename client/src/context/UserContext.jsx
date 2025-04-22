@@ -10,7 +10,7 @@ export function UserContextProvider({ children }) {
   useEffect(() => {
     axios.get('/profile').then((res) => {
       setId(res.data.userId);
-      setUsername(res.data.activeUsername);
+      setUsername(res.data.username);
       setShouldNavigate(true);
     });
   }, []);
