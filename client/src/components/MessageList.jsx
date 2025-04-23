@@ -1,5 +1,5 @@
 import React from 'react';
-import Message from '../Message/Message';
+import Message from './Message';
 
 const MessageList = ({ messages, currentUserId }) => {
   // Group messages by date

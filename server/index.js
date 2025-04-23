@@ -10,11 +10,21 @@ const messageRoutes = require('./routes/messages');
 const { Server } = require('socket.io');
 
 const jwtSecret = process.env.JWT_SECRET;
-
-mongoose.connect(process.env.MONGO_URL);
+const SSL = process.env.SSL; // Set to 'true' on cloud and 'false' on local database
+mongoose
+  .connect(process.env.MONGO_URL, {
+    ssl: SSL,
+    authSource: 'admin',
+    autoIndex: true,
+  })
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((err) => {
+    console.error('MongoDB connection error:', err);
+  });
 const clientUrl = process.env.CLIENT_URL;
 const port = process.env.PORT || 8000;
-let activeConnections = {};
 
 const app = express();
 
@@ -81,12 +91,7 @@ io.on('connection', (socket) => {
     socket.userId = user.userId;
     socket.username = user.username; // Assuming username is in the token payload
 
-    console.log(
-      'A user connected with id:',
-      socket.userId,
-      'and name:',
-      socket.username
-    );
+    console.log(socket.username, 'connected');
 
     // Notify all clients about the updated online user list
     notifyOnlineUsers();
@@ -96,17 +101,16 @@ io.on('connection', (socket) => {
   });
 
   // Handle new message event
-  socket.on('sendMessage', async ({ recipientId, content }) => {
+  socket.on('sendMessage', async ({ recipient, content }) => {
     if (!socket.userId) return;
 
     try {
       const Message = require('./models/Message');
-      const User = require('./models/User');
 
       // Create new message in database
       const newMessage = await Message.create({
         sender: socket.userId,
-        recipient: recipientId,
+        recipient: recipient.userId,
         content: content.trim(),
       });
 
@@ -117,24 +121,31 @@ io.on('connection', (socket) => {
 
       // Emit to both sender and recipient
       io.to(socket.userId).emit('newMessage', populatedMessage);
-      io.to(recipientId).emit('newMessage', populatedMessage);
+      io.to(recipient.userId).emit('newMessage', populatedMessage);
 
-      console.log(`Message sent from ${socket.username} to ${recipientId}`);
+      console.log(
+        `Message sent from ${socket.username} to ${recipient.username}`
+      );
     } catch (error) {
       console.error('Socket message error:', error);
       socket.emit('messageError', { error: 'Failed to send message' });
     }
   });
 
+  // Handle typing event
+  socket.on('typing', ({ recipient }) => {
+    console.log(socket.username, 'is typing to ', recipient.username);
+    io.to(recipient.userId).emit('typingEvent', socket.userId);
+  });
+
+  // Handle typing ended event
+  socket.on('typingEnded', ({ recipient }) => {
+    console.log(socket.username, 'stopped typing to ', recipient.username);
+    io.to(recipient.userId).emit('typingEndedEvent', socket.userId);
+  });
+
   socket.on('disconnect', () => {
-    console.log(
-      'User disconnected with id:',
-      socket.userId,
-      'and name:',
-      socket.username
-    );
-    // Notify all clients about the updated online user list
-    // Need a slight delay to ensure the socket is fully removed before notifying
-    setTimeout(notifyOnlineUsers, 100);
+    console.log(socket.username, 'has disconnected');
+    setTimeout(notifyOnlineUsers, 500);
   });
 });

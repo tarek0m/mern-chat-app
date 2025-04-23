@@ -1,14 +1,10 @@
 {
-  "extends": [
-    "development"
-  ],
+  "extends": ["development"],
   "hints": {
-    "compat-api/css": [
+    "compat-server/css": [
       "default",
       {
-        "ignore": [
-          "-webkit-mask"
-        ]
+        "ignore": ["-webkit-mask"]
       }
     ]
   }

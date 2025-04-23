@@ -10,55 +10,88 @@ A real-time chat application built using the MERN stack (MongoDB, Express.js, Re
 - Real-time 1-on-1 messaging
 - Display online users
 - Modern UI styled with Tailwind CSS
+- Message history persistence
+- Real-time typing indicators
+
+![Chat App Screenshot](img2.png)
 
 ## Planned Features
 
 - Group Chats
 - File and Media Uploads
+- Message Reactions
+- Read Receipts
+- User Profiles with Customizable Avatars
+- Dark Mode Support
+- Voice and Video Calls
+- End-to-End Encryption
+- Message Search Functionality
+- Offline Support (PWA)
 
 ## Tech Stack
 
-- **Frontend:** React, Tailwind CSS, Vite
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB (with Mongoose ODM)
-- **Real-time Communication:** Socket.IO
+- **Frontend:**
+
+  - React 19 with Hooks
+  - Tailwind CSS for styling
+  - Vite for build tooling
+  - Socket.IO Client for real-time communication
+  - React Router for navigation
+  - Axios for API requests
+
+- **Backend:**
+  - Node.js with Express.js
+  - Socket.IO for WebSocket server
+  - JWT for authentication
+  - MongoDB with Mongoose ODM
 
 ## Project Structure
 
+- **Backend:**
+  - API routes are defined in the `server/routes` directory.
+  - Controllers handle the business logic for each route.
+  - Models define the data structure using Mongoose.
+  - Socket.IO events are handled in the `server/controllers/socketController.js`.
+- **Frontend:**
+  - React components are located in the `client/src/components` directory.
+  - Context providers are in the `client/src/context` directory.
+  - Page components are in the `client/src/pages` directory.
+  - Socket.IO events are handled in the `client/src/context/SocketContext.js`.
+
 ```
 mern-chat-app/
-├── api/            # Backend (Node.js/Express)
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── index.js
-│   └── package.json
-├── client/         # Frontend (React/Vite)
-│   ├── public/
+├── server/            # Backend (Node.js/Express)
+│   ├── controllers/   # Route controllers
+│   ├── models/        # Mongoose models
+│   ├── routes/        # API routes
+│   ├── index.js       # Server entry point
+│   └── package.json   # Backend dependencies
+├── client/            # Frontend (React/Vite)
+│   ├── public/        # Static assets
 │   ├── src/
-│   │   ├── components/
-│   │   ├── context/
-│   │   ├── pages/
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.js
-└── README.md
+│   │   ├── components/  # Reusable UI components
+│   │   ├── context/     # React context providers
+│   │   ├── pages/       # Page components
+│   │   ├── App.jsx      # Main application component
+│   │   └── main.jsx     # Application entry point
+│   ├── index.html       # HTML template
+│   ├── package.json     # Frontend dependencies
+│   └── vite.config.js   # Vite configuration
+└── README.md            # Project documentation
 ```
 
 ## Setup and Installation
 
 **Prerequisites:**
 
-- Node.js and npm (or yarn)
+- Node.js (v16+) and npm (or yarn)
 - MongoDB instance (local or cloud-based like MongoDB Atlas)
 
 **Backend Setup:**
 
-1.  Navigate to the `api` directory:
+1.  Navigate to the `server` directory:
     ```bash
-    cd api
+    cd server
     ```
 2.  Install dependencies:
     ```bash
@@ -66,12 +99,12 @@ mern-chat-app/
     # or
     # yarn install
     ```
-3.  Create a `.env` file in the `api` directory and add your environment variables (e.g., MongoDB connection string, JWT secret):
+3.  Create a `.env` file in the `server` directory and add your environment variables:
     ```env
     MONGO_URL=your_mongodb_connection_string
     JWT_SECRET=your_jwt_secret
     PORT=8000
-    CLIENT_URL=http://localhost:5173
+    CLIENT_URL=http://127.0.0.1:5173
     ```
 4.  Start the backend server:
     ```bash
@@ -99,4 +132,4 @@ mern-chat-app/
     # or
     # yarn dev
     ```
-4.  Open your browser and navigate to `http://localhost:5173` (or the port specified by Vite).
+4.  Open your browser and navigate to `http://127.0.0.1:5173` (or the port specified by Vite).
