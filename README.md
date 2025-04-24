@@ -112,7 +112,7 @@ mern-chat-app/
     # or
     # yarn start
     ```
-    The backend server should be running on the port specified in your `.env` file (default: 8000).
+    The backend server should be running on the port specified in your `.env` file.
 
 **Frontend Setup:**
 

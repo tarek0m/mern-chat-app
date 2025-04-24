@@ -41,7 +41,7 @@ function Chat() {
   // Socket connection and event listeners
   useEffect(() => {
     if (username) {
-      socketRef.current = io('http://127.0.0.1:8000', {
+      socketRef.current = io(import.meta.env.VITE_BACKEND_URL, {
         withCredentials: true,
       });
       socketRef.current.on('onlineUsers', (users) => {

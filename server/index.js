@@ -24,7 +24,7 @@ mongoose
     console.error('MongoDB connection error:', err);
   });
 const clientUrl = process.env.CLIENT_URL;
-const port = process.env.PORT || 8000;
+const port = process.env.PORT;
 
 const app = express();
 
